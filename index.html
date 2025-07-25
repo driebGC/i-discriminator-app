@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I判別アプリ</title>
+    <!-- Tailwind CSSを読み込む -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* Interフォントを使用 */
+            background-color: #f0f4f8; /* 背景色 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 画面全体に広がるように設定 */
+            margin: 0;
+            padding: 16px; /* モバイルでのパディング */
+        }
+        /* カスタムスタイルでボタンにグラデーションとシャドウを追加 */
+        .btn-primary {
+            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 15px 0 rgba(106, 17, 203, 0.75);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-image: linear-gradient(to right, #2575fc 0%, #6a11cb 100%);
+            box-shadow: 0 4px 15px 0 rgba(37, 117, 252, 0.75);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">「I」判別アプリ</h1>
+
+        <div class="mb-6">
+            <label for="textInput" class="block text-gray-700 text-lg font-medium mb-2">
+                文字を入力してください:
+            </label>
+            <input
+                type="text"
+                id="textInput"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-center"
+                placeholder="例: I, Ｉ, または Ⅰ"
+                maxlength="1"
+            >
+        </div>
+
+        <button
+            id="checkButton"
+            class="btn-primary text-white font-semibold py-3 px-6 rounded-lg text-lg w-full mb-6"
+        >
+            判別する
+        </button>
+
+        <div
+            id="resultDisplay"
+            class="p-4 rounded-lg text-xl font-semibold min-h-[60px] flex items-center justify-center text-gray-900 bg-blue-50 border border-blue-200"
+        >
+            <!-- 結果がここに表示されます -->
+        </div>
+    </div>
+
+    <script>
+        // DOM要素への参照を取得
+        const textInput = document.getElementById('textInput');
+        const checkButton = document.getElementById('checkButton');
+        const resultDisplay = document.getElementById('resultDisplay');
+
+        // ボタンがクリックされたときの処理
+        checkButton.addEventListener('click', () => {
+            const inputText = textInput.value.trim(); // 入力値を取得し、前後の空白を削除
+
+            // 入力値が空の場合
+            if (inputText === '') {
+                resultDisplay.textContent = '何か文字を入力してください。';
+                resultDisplay.className = 'p-4 rounded-lg text-xl font-semibold min-h-[60px] flex items-center justify-center text-gray-900 bg-blue-50 border border-blue-200';
+                return;
+            }
+
+            // 入力値が1文字でない場合
+            if (inputText.length !== 1) {
+                resultDisplay.textContent = '1文字だけ入力してください。';
+                resultDisplay.className = 'p-4 rounded-lg text-xl font-semibold min-h-[60px] flex items-center justify-center text-red-800 bg-red-50 border border-red-200';
+                return;
+            }
+
+            // アルファベットの「I」（半角）をチェック (U+0049)
+            const alphabetI = 'I';
+            // アルファベットの「Ｉ」（全角）をチェック (U+FF29)
+            const fullWidthAlphabetI = '\uFF29';
+            // ローマ数字の「Ⅰ」（環境依存文字、U+2160）をチェック
+            const romanNumeralOne = '\u2160';
+
+            let message = '';
+            let bgColor = 'bg-blue-50';
+            let textColor = 'text-gray-900';
+            let borderColor = 'border-blue-200';
+
+            if (inputText === alphabetI) {
+                message = '半角アルファベット';
+                bgColor = 'bg-green-50';
+                textColor = 'text-green-800';
+                borderColor = 'border-green-200';
+            } else if (inputText === fullWidthAlphabetI) {
+                message = '全角アルファベット';
+                bgColor = 'bg-purple-50';
+                textColor = 'text-purple-800';
+                borderColor = 'border-purple-200';
+            } else if (inputText === romanNumeralOne) {
+                message = 'ローマ数字';
+                bgColor = 'bg-yellow-50';
+                textColor = 'text-yellow-800';
+                borderColor = 'border-yellow-200';
+            } else {
+                message = `？？？`;
+                bgColor = 'bg-gray-100';
+                textColor = 'text-gray-700';
+                borderColor = 'border-gray-300';
+            }
+
+            // 結果を表示エリアに設定
+            resultDisplay.textContent = message;
+            // 結果に応じてスタイルを更新
+            resultDisplay.className = `p-4 rounded-lg text-xl font-semibold min-h-[60px] flex items-center justify-center ${textColor} ${bgColor} ${borderColor}`;
+        });
+    </script>
+</body>
+</html>
